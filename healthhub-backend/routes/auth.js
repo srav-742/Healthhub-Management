@@ -6,6 +6,14 @@ const Doctor = require('../models/Doctor'); // ✅ Add this
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
+const getAuthErrorMessage = (err, fallbackMessage) => {
+  if (err.code === 8000 || err.message?.includes('not allowed to do action')) {
+    return 'Database permissions are not configured correctly. Grant the Atlas user readWrite access to the healthhub database.';
+  }
+
+  return fallbackMessage;
+};
+
 // POST /api/auth/signup
 router.post('/signup', async (req, res) => {
   const { name, email, password, role } = req.body;
@@ -45,7 +53,7 @@ router.post('/signup', async (req, res) => {
     });
   } catch (err) {
     console.error(err.message);
-    res.status(500).json({ msg: 'Server error during registration.' });
+    res.status(500).json({ msg: getAuthErrorMessage(err, 'Server error during registration.') });
   }
 });
 
@@ -158,7 +166,7 @@ router.post('/login', async (req, res) => {
     });
   } catch (err) {
     console.error('Login error:', err.message);
-    res.status(500).json({ msg: 'Server error during login.' });
+    res.status(500).json({ msg: getAuthErrorMessage(err, 'Server error during login.') });
   }
 });
 

@@ -9,11 +9,15 @@ const connectDB = async () => {
     });
 
     const db = mongoose.connection;
+    await db.db.collection('users').findOne({}, { projection: { _id: 1 } });
     console.log(`✅ MongoDB Connected: ${db.host}`);
     console.log(`📁 Database: ${db.name}`);
   } catch (err) {
     console.error('❌ MongoDB Connection Error:', err.message);
     console.error('🔧 Check MONGO_URI in .env — is IP whitelisted in Atlas?');
+    if (err.code === 8000) {
+      console.error('MongoDB Atlas permission error: grant the database user readWrite access to the healthhub database.');
+    }
     process.exit(1);
   }
 };

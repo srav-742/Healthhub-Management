@@ -7,24 +7,62 @@ require('dotenv').config();
 console.log('🔧 PORT:', process.env.PORT);
 console.log('🔧 MONGO_URI (redacted):', process.env.MONGO_URI?.replace(/:.+@/, ':***@'));
 
+if (!process.env.MONGO_URI) {
+  console.warn('MONGO_URI is not set. Configure it in the backend environment.');
+}
+
+if (!process.env.JWT_SECRET) {
+  console.warn('JWT_SECRET is not set. Using fallback secret. Set JWT_SECRET in production.');
+}
+
 const connectDB = require('./config/db');
 
 const app = express();
 
-// 📌 Connect to MongoDB
-connectDB();
+const normalizeOrigin = (origin = '') => origin.trim().replace(/\/$/, '');
+const configuredOrigins = [
+  process.env.FRONTEND_URL,
+  process.env.FRONTEND_URLS,
+  process.env.CORS_ORIGIN,
+  process.env.ALLOWED_ORIGINS,
+]
+  .filter(Boolean)
+  .flatMap((value) => value.split(','))
+  .map(normalizeOrigin)
+  .filter(Boolean);
 
-// 📌 Middleware
-app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin) return callback(null, true);
-    if (/^https?:\/\/localhost(:\d+)?$/.test(origin) || /^https?:\/\/127\.0\.0\.1(:\d+)?$/.test(origin)) {
+const isLocalOrigin = (origin) => /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/i.test(origin);
+const isAllowedOrigin = (origin) => {
+  if (!origin) return true;
+
+  const normalizedOrigin = normalizeOrigin(origin);
+  if (isLocalOrigin(normalizedOrigin)) return true;
+
+  if (configuredOrigins.length === 0) return true;
+
+  return configuredOrigins.includes(normalizedOrigin);
+};
+
+const corsOptions = {
+  origin(origin, callback) {
+    if (isAllowedOrigin(origin)) {
       return callback(null, true);
     }
-    return callback(new Error('CORS policy: Origin not allowed'), false);
+
+    return callback(new Error(`CORS policy: Origin not allowed (${origin})`));
   },
   credentials: true,
-}));
+};
+
+// 📌 Connect to MongoDB
+if (configuredOrigins.length > 0) {
+  console.log('Allowed frontend origins:', configuredOrigins.join(', '));
+} else {
+  console.warn('No FRONTEND_URLS configured. Allowing requests from any origin.');
+}
+
+// 📌 Middleware
+app.use(cors(corsOptions));
 app.use(express.json());
 
 // 📌 Routes
@@ -100,7 +138,22 @@ app.get('/', (req, res) => {
 });
 
 // 📌 Start server
-const PORT = process.env.PORT || 5000;
+app.use((err, req, res, next) => {
+  if (!err) return next();
+
+  if (err.message && err.message.startsWith('CORS policy:')) {
+    return res.status(403).json({ msg: err.message });
+  }
+
+  console.error('Unhandled server error:', err);
+  return res.status(500).json({ msg: 'Internal server error.' });
+});
+startServer();
+
+async function startServer() {
+  await connectDB();
+
+  const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`🚀 Server running at http://localhost:${PORT}`);
   console.log(`🔗 Doctor API: /api/doctor/*`);
@@ -119,3 +172,4 @@ app.listen(PORT, () => {
   console.log(`✅ New: Complete Appointment → /api/doctor/appointments/complete/:id`);
   console.log(`✅ New: Staff Tasks → /api/staff-tasks`);
 });
+}
