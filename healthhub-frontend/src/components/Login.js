@@ -45,7 +45,7 @@ const Login = () => {
       /* 
       // 🔐 Special Shankar Login - MOVED TO BACKEND
       // This frontend check was preventing a real token from being issued.
-      // The backend now handles this credential check and issues a valid JWT.
+      // The backend now handles this credential check and returns the login token.
       if (email === 'shankar13052005@gmail.com' && password === '123456') {
         const mockUser = {
           name: 'Shankar Admin',

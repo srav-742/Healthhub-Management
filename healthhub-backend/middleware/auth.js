@@ -1,11 +1,10 @@
-// middleware/auth.js
-const jwt = require('jsonwebtoken');
+const User = require('../models/User');
 
-module.exports = function (req, res, next) {
-  // Get token from header
+module.exports = async function (req, res, next) {
   let token = req.header('x-auth-token');
+
   if (!token) {
-    token = req.header('Authorization')?.split(' ')[1]; // Bearer token
+    token = req.header('Authorization')?.split(' ')[1];
   }
 
   if (!token) {
@@ -13,18 +12,21 @@ module.exports = function (req, res, next) {
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-fallback-secret-key');
+    const user = await User.findById(token).select('_id role email status');
 
-    if (!decoded.user || !decoded.user.id) {
-      return res.status(401).json({ msg: 'Invalid token structure' });
+    if (!user) {
+      return res.status(401).json({ msg: 'Invalid login token' });
     }
 
-    req.user = decoded.user; // { id, role }
+    req.user = {
+      id: user._id.toString(),
+      role: user.role,
+      email: user.email,
+      status: user.status,
+    };
+
     next();
   } catch (err) {
-    if (err.name === 'TokenExpiredError') {
-      return res.status(401).json({ msg: 'Token expired' });
-    }
-    return res.status(401).json({ msg: 'Invalid or expired token' });
+    return res.status(401).json({ msg: 'Invalid login token' });
   }
 };

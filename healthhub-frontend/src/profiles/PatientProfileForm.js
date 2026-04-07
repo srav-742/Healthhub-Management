@@ -20,6 +20,21 @@ const PatientProfileForm = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
+  const completePatientLogin = async (emailToLogin, passwordToLogin) => {
+    const loginRes = await axios.post(
+      (process.env.REACT_APP_API_URL || 'http://localhost:5000') + '/api/auth/login',
+      {
+        email: emailToLogin,
+        password: passwordToLogin,
+      }
+    );
+
+    const { token, user } = loginRes.data;
+    localStorage.setItem('authToken', token);
+    localStorage.setItem('user', JSON.stringify(user));
+    axios.defaults.headers.common['x-auth-token'] = token;
+  };
+
 
   useEffect(() => {
 
@@ -109,12 +124,15 @@ const PatientProfileForm = () => {
       };
 
       const res = await axios.post((process.env.REACT_APP_API_URL || 'http://localhost:5000') + '/api/patients', patientData);
+      const profileCreated = res.data.message?.includes('success') || res.status === 201;
 
-      if (res.data.message?.includes('success') || res.status === 201) {
+      if (profileCreated) {
         setMessage('🎉 Patient profile created successfully!');
         // ✅ Cleanup
+        await completePatientLogin(email, confirmPassword);
         localStorage.removeItem('pendingProfile');
         localStorage.removeItem('tempSignupPassword');
+        navigate('/patient-dashboard');
       } else {
         setError('Failed to save profile.');
       }

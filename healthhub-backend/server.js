@@ -11,10 +11,6 @@ if (!process.env.MONGO_URI) {
   console.warn('MONGO_URI is not set. Configure it in the backend environment.');
 }
 
-if (!process.env.JWT_SECRET) {
-  console.warn('JWT_SECRET is not set. Using fallback secret. Set JWT_SECRET in production.');
-}
-
 const connectDB = require('./config/db');
 
 const app = express();
@@ -68,7 +64,7 @@ app.use(express.json());
 // 📌 Routes
 
 // Authentication
-app.use('/api/auth', require('./routes/auth'));
+app.use('/api/auth', require('./routes/authSimple'));
 
 // Patient Management
 app.use('/api/patients', require('./routes/patients'));
