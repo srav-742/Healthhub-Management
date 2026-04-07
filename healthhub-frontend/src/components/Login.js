@@ -455,6 +455,7 @@ const Login = () => {
                 className="input-control-login"
                 type="email"
                 name="email"
+                autoComplete="email"
                 placeholder="shankar@healthhub.com"
                 value={formData.email}
                 onChange={handleChange}
@@ -469,6 +470,7 @@ const Login = () => {
                 type="password"
                 name="password"
                 placeholder="••••••••"
+                autoComplete="current-password"
                 value={formData.password}
                 onChange={handleChange}
                 disabled={loading}

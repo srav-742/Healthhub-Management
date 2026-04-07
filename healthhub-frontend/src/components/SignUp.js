@@ -392,6 +392,7 @@ const SignUp = () => {
                 className="input-control"
                 type="text"
                 name="name"
+                autoComplete="name"
                 placeholder="Shankar Raman"
                 value={formData.name}
                 onChange={handleChange}
@@ -405,6 +406,7 @@ const SignUp = () => {
                 className="input-control"
                 type="email"
                 name="email"
+                autoComplete="email"
                 placeholder="shankar@hms.com"
                 value={formData.email}
                 onChange={handleChange}
@@ -419,6 +421,7 @@ const SignUp = () => {
                 type="password"
                 name="password"
                 placeholder="Min. 6 chars"
+                autoComplete="new-password"
                 value={formData.password}
                 onChange={handleChange}
                 disabled={loading}
