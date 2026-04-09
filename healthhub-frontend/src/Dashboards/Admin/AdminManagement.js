@@ -7,7 +7,6 @@ const AdminManagement = () => {
   const [activeTab, setActiveTab] = useState('fetch');
   const [formData, setFormData] = useState({});
   const [admins, setAdmins] = useState([]);
-  const [fetchLoading, setFetchLoading] = useState(false);
   const [editMode, setEditMode] = useState(false);
 
   // ... (Identical logic) ...
@@ -48,12 +47,10 @@ const AdminManagement = () => {
   };
 
   const fetchAdmins = async () => {
-    setFetchLoading(true);
     try {
       const res = await axios.get((process.env.REACT_APP_API_URL || 'http://localhost:5000') + '/api/admin/all');
       setAdmins(res.data);
     } catch (err) { alert('Fetch failed'); }
-    finally { setFetchLoading(false); }
   };
 
   const deleteAdmin = async () => {

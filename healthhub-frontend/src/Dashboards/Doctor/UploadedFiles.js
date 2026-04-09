@@ -7,7 +7,6 @@ const UploadedFiles = () => {
   const location = useLocation();
   // Using patientId for the API, patientName for display
   const [targetId, setTargetId] = useState(location.state?.patientId || '');
-  const [targetName, setTargetName] = useState(location.state?.patientName || '');
   const [documents, setDocuments] = useState([]);
   const [loading, setLoading] = useState(false);
   const [searched, setSearched] = useState(false);

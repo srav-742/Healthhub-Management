@@ -4,9 +4,7 @@ import { Link } from 'react-router-dom';
 import {
   ArrowBack,
   CalendarMonth,
-  Person,
   AccessTime,
-  AttachMoney,
   EventAvailable,
   MedicalServices
 } from '@mui/icons-material';

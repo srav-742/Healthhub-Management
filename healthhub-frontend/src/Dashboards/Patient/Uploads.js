@@ -10,7 +10,6 @@ const Uploads = () => {
   const [loading, setLoading] = useState(true);
   const [uploadSuccess, setUploadSuccess] = useState('');
   const [error, setError] = useState('');
-  const [assignedDoctor, setAssignedDoctor] = useState(''); // Keep for fallback or unused? simpler to just use list
   const [activeAppointments, setActiveAppointments] = useState([]);
   const [selectedAptId, setSelectedAptId] = useState('');
   const token = localStorage.getItem('authToken');

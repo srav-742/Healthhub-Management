@@ -1,5 +1,5 @@
 // src/Dashboards/Doctor/PatientHistory.js
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 import {
@@ -31,13 +31,7 @@ const PatientHistory = () => {
   const token = localStorage.getItem('authToken');
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (viewMode === 'history') {
-      fetchMyHistory();
-    }
-  }, [viewMode, token]);
-
-  const fetchMyHistory = async () => {
+  const fetchMyHistory = useCallback(async () => {
     setHistoryLoading(true);
     try {
       const res = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5000'}/api/appointment/doctor/my?type=history`, {
@@ -49,7 +43,13 @@ const PatientHistory = () => {
       }
     } catch (err) { console.error('Fetch error:', err); }
     finally { setHistoryLoading(false); }
-  };
+  }, [token]);
+
+  useEffect(() => {
+    if (viewMode === 'history') {
+      fetchMyHistory();
+    }
+  }, [viewMode, fetchMyHistory]);
 
   const handleSearch = async (e) => {
     e.preventDefault();

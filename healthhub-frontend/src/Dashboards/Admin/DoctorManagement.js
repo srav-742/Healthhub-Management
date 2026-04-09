@@ -1,13 +1,12 @@
 // src/dashboards/admin/DoctorManagement.js
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Search, Add, Edit, Delete, Refresh, Save, Close, MedicalServices } from '@mui/icons-material';
+import { Add, Edit, Delete, Refresh, Save } from '@mui/icons-material';
 
 const DoctorManagement = () => {
   const [activeTab, setActiveTab] = useState('fetch');
   const [formData, setFormData] = useState({});
   const [doctors, setDoctors] = useState([]);
-  const [fetchLoading, setFetchLoading] = useState(false);
   const [editMode, setEditMode] = useState(false);
 
   // ... (Identical logic to preserve functionality) ...
@@ -49,12 +48,10 @@ const DoctorManagement = () => {
   };
 
   const fetchDoctors = async () => {
-    setFetchLoading(true);
     try {
       const res = await axios.get((process.env.REACT_APP_API_URL || 'http://localhost:5000') + '/api/doctor/all');
       setDoctors(res.data);
     } catch (err) { alert('Failed to fetch doctors'); }
-    finally { setFetchLoading(false); }
   };
 
   const deleteDoctor = async () => {

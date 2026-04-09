@@ -7,8 +7,7 @@ import {
   Event,
   Description,
   AttachMoney,
-  Medication,
-  Circle
+  Medication
 } from '@mui/icons-material';
 
 const History = () => {

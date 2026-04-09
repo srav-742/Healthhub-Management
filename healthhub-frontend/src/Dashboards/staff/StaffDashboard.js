@@ -1,15 +1,12 @@
 // src/Dashboards/Staff/StaffDashboard.js
 import React, { useEffect, useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import {
   Home,
   Assignment,
   Event,
   MedicalServices,
   Logout,
-  Person,
-  Notifications,
-  Search,
   Menu,
   Close
 } from '@mui/icons-material';

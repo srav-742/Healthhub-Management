@@ -8,7 +8,6 @@ import {
   History,
   Logout,
   LocalHospital,
-  Person,
   Menu,
   Close
 } from '@mui/icons-material';

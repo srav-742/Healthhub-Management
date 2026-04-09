@@ -7,7 +7,6 @@ const StaffManagement = () => {
   const [activeTab, setActiveTab] = useState('fetch');
   const [formData, setFormData] = useState({});
   const [staffList, setStaffList] = useState([]);
-  const [fetchLoading, setFetchLoading] = useState(false);
   const [editMode, setEditMode] = useState(false);
 
   // ... (Identical logic) ...
@@ -48,12 +47,10 @@ const StaffManagement = () => {
   };
 
   const fetchStaff = async () => {
-    setFetchLoading(true);
     try {
       const res = await axios.get((process.env.REACT_APP_API_URL || 'http://localhost:5000') + '/api/staff/all');
       setStaffList(res.data);
     } catch (err) { alert('Fetch failed'); }
-    finally { setFetchLoading(false); }
   };
 
   const deleteStaff = async () => {

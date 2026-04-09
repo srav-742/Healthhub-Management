@@ -1,7 +1,7 @@
 // src/dashboards/admin/PatientManagement.js
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Search, Add, Edit, Delete, Refresh, Save, Close } from '@mui/icons-material';
+import { Add, Edit, Delete, Refresh, Save } from '@mui/icons-material';
 
 const PatientManagement = () => {
   const [activeTab, setActiveTab] = useState('fetch');

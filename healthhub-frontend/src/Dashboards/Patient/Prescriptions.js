@@ -1,7 +1,7 @@
 // src/components/Prescriptions.js
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { ArrowBack, ReceiptLong, CheckCircle, Medication, Event, LocalPharmacy, MedicalServices } from '@mui/icons-material';
+import { Link } from 'react-router-dom';
+import { ArrowBack, ReceiptLong, CheckCircle, Medication, Event, LocalPharmacy } from '@mui/icons-material';
 
 const Prescriptions = () => {
   const [prescriptions, setPrescriptions] = useState([]);
